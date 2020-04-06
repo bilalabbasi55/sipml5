@@ -6,6 +6,7 @@
 -->
 <html>
 <!-- head -->
+
 <head>
     <meta charset="utf-8" />
     <title>sipML5 live demo</title>
@@ -18,7 +19,8 @@
     DEBUG VERSION: 'SIPml-api.js'
     RELEASE VERSION: 'release/SIPml-api.js'
     -->
-    <script src="SIPml-api.js?svn=252" type="text/javascript"> </script>
+    <script src="SIPml-api.js?svn=252" type="text/javascript">
+    </script>
 
     <!-- Styles -->
     <link href="./assets/css/bootstrap.css" rel="stylesheet" />
@@ -27,14 +29,14 @@
             padding-top: 80px;
             padding-bottom: 40px;
         }
-
+        
         .navbar-inner-red {
             background-color: #600000;
             background-image: none;
             background-repeat: no-repeat;
             filter: none;
         }
-
+        
         .full-screen {
             position: absolute;
             left: 0;
@@ -43,11 +45,11 @@
             height: 100%;
             overflow: hidden;
         }
-
+        
         .normal-screen {
             position: relative;
         }
-
+        
         .call-options {
             padding: 5px;
             background-color: #f0f0f0;
@@ -66,7 +68,7 @@
             -moz-transition-duration: 2s;
             -o-transition-duration: 2s;
         }
-
+        
         .tab-video,
         .div-video {
             width: 100%;
@@ -78,13 +80,13 @@
             -moz-transition-duration: 2s;
             -o-transition-duration: 2s;
         }
-
+        
         .label-align {
             display: block;
             padding-left: 15px;
             text-indent: -15px;
         }
-
+        
         .input-align {
             width: 13px;
             height: 13px;
@@ -95,7 +97,7 @@
             top: -1px;
             *overflow: hidden;
         }
-
+        
         .glass-panel {
             z-index: 99;
             position: fixed;
@@ -108,7 +110,7 @@
             opacity: 0.8;
             background-color: Gray;
         }
-
+        
         .div-keypad {
             z-index: 100;
             position: fixed;
@@ -118,7 +120,7 @@
             -moz-transition-duration: 2s;
             -o-transition-duration: 2s;
         }
-
+        
         .previewvideo {
             position: absolute;
             width: 88px;
@@ -135,7 +137,6 @@
 
     <!-- Javascript code -->
     <script type="text/javascript">
-
         // to avoid caching
         //if (window.location.href.indexOf("svn=") == -1) {
         //    window.location.href += (window.location.href.indexOf("?") == -1 ? "svn=236" : "&svn=229");
@@ -152,12 +153,11 @@
         var oConfigCall;
         var oReadyStateTimer;
 
-        C =
-        {
+        C = {
             divKeyPadWidth: 220
         };
 
-        window.onload = function () {
+        window.onload = function() {
             window.console && window.console.info && window.console.info("location=" + window.location);
 
             videoLocal = document.getElementById("video_local");
@@ -173,11 +173,12 @@
 
             loadCredentials();
             loadCallOptions();
+            settingsSave();
 
             // Initialize call button
             uiBtnCallSetText("Call");
 
-            var getPVal = function (PName) {
+            var getPVal = function(PName) {
                 var query = window.location.search.substring(1);
                 var vars = query.split('&');
                 for (var i = 0; i < vars.length; i++) {
@@ -189,7 +190,7 @@
                 return null;
             }
 
-            var preInit = function () {
+            var preInit = function() {
                 // set default webrtc type (before initialization)
                 var s_webrtc_type = getPVal("wt");
                 var s_fps = getPVal("fps");
@@ -217,14 +218,14 @@
                 //tsk_utils_log_info(_rinningApps);
             }
 
-            oReadyStateTimer = setInterval(function () {
-                if (document.readyState === "complete") {
-                    clearInterval(oReadyStateTimer);
-                    // initialize SIPML5
-                    preInit();
-                }
-            },
-            500);
+            oReadyStateTimer = setInterval(function() {
+                    if (document.readyState === "complete") {
+                        clearInterval(oReadyStateTimer);
+                        // initialize SIPML5
+                        preInit();
+                    }
+                },
+                500);
 
             /*if (document.readyState === "complete") {
                 preInit();
@@ -245,17 +246,14 @@
                 if (SIPml.getNavigatorFriendlyName() == 'chrome') {
                     if (confirm("You're using an old Chrome version or WebRTC is not enabled.\nDo you want to see how to enable WebRTC?")) {
                         window.location = 'http://www.webrtc.org/running-the-demos';
-                    }
-                    else {
+                    } else {
                         window.location = "index.html";
                     }
                     return;
-                }
-                else {
+                } else {
                     if (confirm("webrtc-everywhere extension is not installed. Do you want to install it?\nIMPORTANT: You must restart your browser after the installation.")) {
                         window.location = 'https://github.com/sarandogou/webrtc-everywhere';
-                    }
-                    else {
+                    } else {
                         // Must do nothing: give the user the chance to accept the extension
                         // window.location = "index.html";
                     }
@@ -266,8 +264,7 @@
             if (!SIPml.isWebSocketSupported()) {
                 if (confirm('Your browser don\'t support WebSockets.\nDo you want to download a WebSocket-capable browser?')) {
                     window.location = 'https://www.google.com/intl/en/chrome/browser/';
-                }
-                else {
+                } else {
                     window.location = "index.html";
                 }
                 return;
@@ -290,13 +287,26 @@
                 video_local: viewVideoLocal,
                 video_remote: viewVideoRemote,
                 screencast_window_id: 0x00000000, // entire desktop
-                bandwidth: { audio: undefined, video: undefined },
-                video_size: { minWidth: undefined, minHeight: undefined, maxWidth: undefined, maxHeight: undefined },
-                events_listener: { events: '*', listener: onSipEventSession },
-                sip_caps: [
-                                { name: '+g.oma.sip-im' },
-                                { name: 'language', value: '\"en,fr\"' }
-                ]
+                bandwidth: {
+                    audio: undefined,
+                    video: undefined
+                },
+                video_size: {
+                    minWidth: undefined,
+                    minHeight: undefined,
+                    maxWidth: undefined,
+                    maxHeight: undefined
+                },
+                events_listener: {
+                    events: '*',
+                    listener: onSipEventSession
+                },
+                sip_caps: [{
+                    name: '+g.oma.sip-im'
+                }, {
+                    name: 'language',
+                    value: '\"en,fr\"'
+                }]
             };
         }
 
@@ -321,14 +331,14 @@
         function loadCredentials() {
             if (window.localStorage) {
                 // IE retuns 'null' if not defined
+                var txtPubIdentity = 'sip:' + txtPrivateIdentity.value + '@' + txtRealm.value;
                 var s_value;
                 if ((s_value = window.localStorage.getItem('org.doubango.identity.display_name'))) txtDisplayName.value = s_value;
                 if ((s_value = window.localStorage.getItem('org.doubango.identity.impi'))) txtPrivateIdentity.value = s_value;
-                if ((s_value = window.localStorage.getItem('org.doubango.identity.impu'))) txtPublicIdentity.value = s_value;
+                if ((s_value = window.localStorage.getItem('org.doubango.identity.impu'))) txtPubIdentity = s_value;
                 if ((s_value = window.localStorage.getItem('org.doubango.identity.password'))) txtPassword.value = s_value;
                 if ((s_value = window.localStorage.getItem('org.doubango.identity.realm'))) txtRealm.value = s_value;
-            }
-            else {
+            } else {
                 //txtDisplayName.value = "005";
                 //txtPrivateIdentity.value = "005";
                 //txtPublicIdentity.value = "sip:005@sip2sip.info";
@@ -338,11 +348,27 @@
             }
         };
 
+        function settingsSave() {
+            window.localStorage.setItem('org.doubango.expert.disable_video', "false");
+            window.localStorage.setItem('org.doubango.expert.enable_rtcweb_breaker', "false");
+            // if (!txtWebsocketServerUrl.disabled) {
+            window.localStorage.setItem('org.doubango.expert.websocket_server_url', 'wss://kamailio.telnoor.com:7443');
+            // }
+            window.localStorage.setItem('org.doubango.expert.sip_outboundproxy_url', '');
+            window.localStorage.setItem('org.doubango.expert.ice_servers', '');
+            window.localStorage.setItem('org.doubango.expert.bandwidth', '');
+            window.localStorage.setItem('org.doubango.expert.video_size', '');
+            window.localStorage.setItem('org.doubango.expert.disable_early_ims', "false");
+            window.localStorage.setItem('org.doubango.expert.disable_debug', "false");
+            window.localStorage.setItem('org.doubango.expert.enable_media_caching', "false");
+            window.localStorage.setItem('org.doubango.expert.disable_callbtn_options', "false");
+        }
+
         function saveCredentials() {
             if (window.localStorage) {
                 window.localStorage.setItem('org.doubango.identity.display_name', txtDisplayName.value);
                 window.localStorage.setItem('org.doubango.identity.impi', txtPrivateIdentity.value);
-                window.localStorage.setItem('org.doubango.identity.impu', txtPublicIdentity.value);
+                window.localStorage.setItem('org.doubango.identity.impu', 'sip:' + txtPrivateIdentity.value + '@' + txtRealm.value);
                 window.localStorage.setItem('org.doubango.identity.password', txtPassword.value);
                 window.localStorage.setItem('org.doubango.identity.realm', txtRealm.value);
             }
@@ -353,14 +379,17 @@
             // catch exception for IE (DOM not ready)
             try {
                 btnRegister.disabled = true;
-                if (!txtRealm.value || !txtPrivateIdentity.value || !txtPublicIdentity.value) {
+
+                var txtPubIdentity = 'sip:' + txtPrivateIdentity.value + '@' + txtRealm.value;
+
+                if (!txtRealm.value || !txtPrivateIdentity.value || !txtPubIdentity) {
                     txtRegStatus.innerHTML = '<b>Please fill madatory fields (*)</b>';
                     btnRegister.disabled = false;
                     return;
                 }
-                var o_impu = tsip_uri.prototype.Parse(txtPublicIdentity.value);
+                var o_impu = tsip_uri.prototype.Parse(txtPubIdentity);
                 if (!o_impu || !o_impu.s_user_name || !o_impu.s_host) {
-                    txtRegStatus.innerHTML = "<b>[" + txtPublicIdentity.value + "] is not a valid Public identity</b>";
+                    txtRegStatus.innerHTML = "<b>[" + txtPubIdentity + "] is not a valid Public identity</b>";
                     btnRegister.disabled = false;
                     return;
                 }
@@ -380,30 +409,34 @@
                 oSipStack = new SIPml.Stack({
                     realm: txtRealm.value,
                     impi: txtPrivateIdentity.value,
-                    impu: txtPublicIdentity.value,
+                    // impu: txtPublicIdentity.value,
+                    impu: 'sip:' + txtPrivateIdentity.value + '@' + txtRealm.value,
                     password: txtPassword.value,
                     display_name: txtDisplayName.value,
                     websocket_proxy_url: (window.localStorage ? window.localStorage.getItem('org.doubango.expert.websocket_server_url') : null),
                     outbound_proxy_url: (window.localStorage ? window.localStorage.getItem('org.doubango.expert.sip_outboundproxy_url') : null),
                     ice_servers: (window.localStorage ? window.localStorage.getItem('org.doubango.expert.ice_servers') : null),
                     enable_rtcweb_breaker: (window.localStorage ? window.localStorage.getItem('org.doubango.expert.enable_rtcweb_breaker') == "true" : false),
-                    events_listener: { events: '*', listener: onSipEventStack },
+                    events_listener: {
+                        events: '*',
+                        listener: onSipEventStack
+                    },
                     enable_early_ims: (window.localStorage ? window.localStorage.getItem('org.doubango.expert.disable_early_ims') != "true" : true), // Must be true unless you're using a real IMS network
                     enable_media_stream_cache: (window.localStorage ? window.localStorage.getItem('org.doubango.expert.enable_media_caching') == "true" : false),
                     bandwidth: (window.localStorage ? tsk_string_to_object(window.localStorage.getItem('org.doubango.expert.bandwidth')) : null), // could be redefined a session-level
                     video_size: (window.localStorage ? tsk_string_to_object(window.localStorage.getItem('org.doubango.expert.video_size')) : null), // could be redefined a session-level
-                    sip_headers: [
-                            { name: 'User-Agent', value: 'IM-client/OMA1.0 sipML5-v1.2016.03.04' },
-                            { name: 'Organization', value: 'Doubango Telecom' }
-                    ]
-                }
-                );
+                    sip_headers: [{
+                        name: 'User-Agent',
+                        value: 'IM-client/OMA1.0 sipML5-v1.2016.03.04'
+                    }, {
+                        name: 'Organization',
+                        value: 'Doubango Telecom'
+                    }]
+                });
                 if (oSipStack.start() != 0) {
                     txtRegStatus.innerHTML = '<b>Failed to start the SIP stack</b>';
-                }
-                else return;
-            }
-            catch (e) {
+                } else return;
+            } catch (e) {
                 txtRegStatus.innerHTML = "<b>2:" + e + "</b>";
             }
             btnRegister.disabled = false;
@@ -451,8 +484,7 @@
                     return;
                 }
                 saveCallOptions();
-            }
-            else if (oSipSessionCall) {
+            } else if (oSipSessionCall) {
                 txtCallStatus.innerHTML = '<i>Connecting...</i>';
                 oSipSessionCall.accept(oConfigCall);
             }
@@ -469,22 +501,18 @@
                 if (oSipSessionCall.bfcpSharing) {
                     if (oSipSessionCall.stopBfcpShare(oConfigCall) != 0) {
                         txtCallStatus.value = 'Failed to stop BFCP share';
-                    }
-                    else {
+                    } else {
                         oSipSessionCall.bfcpSharing = false;
                     }
-                }
-                else {
+                } else {
                     oConfigCall.screencast_window_id = 0x00000000;
                     if (oSipSessionCall.startBfcpShare(oConfigCall) != 0) {
                         txtCallStatus.value = 'Failed to start BFCP share';
-                    }
-                    else {
+                    } else {
                         oSipSessionCall.bfcpSharing = true;
                     }
                 }
-            }
-            else {
+            } else {
                 sipCall('call-screenshare');
             }
         }
@@ -526,7 +554,7 @@
                 var i_ret;
                 var bMute = !oSipSessionCall.bMute;
                 txtCallStatus.innerHTML = bMute ? '<i>Mute the call...</i>' : '<i>Unmute the call...</i>';
-                i_ret = oSipSessionCall.mute('audio'/*could be 'video'*/, bMute);
+                i_ret = oSipSessionCall.mute('audio' /*could be 'video'*/ , bMute);
                 if (i_ret != 0) {
                     txtCallStatus.innerHTML = '<i>Mute / Unmute failed</i>';
                     return;
@@ -540,43 +568,53 @@
         function sipHangUp() {
             if (oSipSessionCall) {
                 txtCallStatus.innerHTML = '<i>Terminating the call...</i>';
-                oSipSessionCall.hangup({ events_listener: { events: '*', listener: onSipEventSession } });
+                oSipSessionCall.hangup({
+                    events_listener: {
+                        events: '*',
+                        listener: onSipEventSession
+                    }
+                });
             }
         }
 
         function sipSendDTMF(c) {
             if (oSipSessionCall && c) {
                 if (oSipSessionCall.dtmf(c) == 0) {
-                    try { dtmfTone.play(); } catch (e) { }
+                    try {
+                        dtmfTone.play();
+                    } catch (e) {}
                 }
             }
         }
 
         function startRingTone() {
-            try { ringtone.play(); }
-            catch (e) { }
+            try {
+                ringtone.play();
+            } catch (e) {}
         }
 
         function stopRingTone() {
-            try { ringtone.pause(); }
-            catch (e) { }
+            try {
+                ringtone.pause();
+            } catch (e) {}
         }
 
         function startRingbackTone() {
-            try { ringbacktone.play(); }
-            catch (e) { }
+            try {
+                ringbacktone.play();
+            } catch (e) {}
         }
 
         function stopRingbackTone() {
-            try { ringbacktone.pause(); }
-            catch (e) { }
+            try {
+                ringbacktone.pause();
+            } catch (e) {}
         }
 
         function toggleFullScreen() {
             if (videoRemote.webkitSupportsFullscreen) {
                 fullScreen(!videoRemote.webkitDisplayingFullscreen);
-            }
-            else {
+            } else {
                 fullScreen(!bFullScreen);
             }
         }
@@ -600,17 +638,17 @@
             if (tsk_utils_have_webrtc4native() && bFullScreen && videoRemote.webkitSupportsFullscreen) {
                 if (bFullScreen) {
                     videoRemote.webkitEnterFullScreen();
-                }
-                else {
+                } else {
                     videoRemote.webkitExitFullscreen();
                 }
-            }
-            else {
+            } else {
                 if (tsk_utils_have_webrtc4npapi()) {
-                    try { if (window.__o_display_remote) window.__o_display_remote.setFullScreen(b_fs); }
-                    catch (e) { divVideo.setAttribute("class", b_fs ? "full-screen" : "normal-screen"); }
-                }
-                else {
+                    try {
+                        if (window.__o_display_remote) window.__o_display_remote.setFullScreen(b_fs);
+                    } catch (e) {
+                        divVideo.setAttribute("class", b_fs ? "full-screen" : "normal-screen");
+                    }
+                } else {
                     divVideo.setAttribute("class", b_fs ? "full-screen" : "normal-screen");
                 }
             }
@@ -623,7 +661,9 @@
                     oNotifICall.cancel();
                 }
                 oNotifICall = window.webkitNotifications.createNotification('images/sipml-34x39.png', 'Incaming call', 'Incoming call from ' + s_number);
-                oNotifICall.onclose = function () { oNotifICall = null; };
+                oNotifICall.onclose = function() {
+                    oNotifICall = null;
+                };
                 oNotifICall.show();
             }
         }
@@ -632,8 +672,7 @@
             evt = (evt || window.event);
             if (evt.keyCode == 27) {
                 fullScreen(false);
-            }
-            else if (evt.ctrlKey && evt.shiftKey) { // CTRL + SHIFT
+            } else if (evt.ctrlKey && evt.shiftKey) { // CTRL + SHIFT
                 if (evt.keyCode == 65 || evt.keyCode == 86) { // A (65) or V (86)
                     bDisableVideo = (evt.keyCode == 65);
                     txtCallStatus.innerHTML = '<i>Video ' + (bDisableVideo ? 'disabled' : 'enabled') + '</i>';
@@ -648,8 +687,7 @@
                     btnCall.disabled = (!tsk_utils_have_stream() || !oSipSessionRegister || !oSipSessionRegister.is_connected());
                     document.getElementById("divCallCtrl").onmousemove = null; // unsubscribe
                 }
-            }
-            catch (e) { }
+            } catch (e) {}
         }
 
         function uiOnConnectionEvent(b_connected, b_connecting) { // should be enum: connecting, connected, terminating, terminated
@@ -665,8 +703,7 @@
             if (b_added) {
                 o_elt_video.style.opacity = 1;
                 uiVideoDisplayShowHide(true);
-            }
-            else {
+            } else {
                 o_elt_video.style.opacity = 0;
                 fullScreen(false);
             }
@@ -676,8 +713,7 @@
             if (b_show) {
                 tdVideo.style.height = '340px';
                 divVideo.style.height = navigator.appName == 'Microsoft Internet Explorer' ? '100%' : '340px';
-            }
-            else {
+            } else {
                 tdVideo.style.height = '0px';
                 divVideo.style.height = '0px';
             }
@@ -699,12 +735,13 @@
                         var bDisableCallBtnOptions = (window.localStorage && window.localStorage.getItem('org.doubango.expert.disable_callbtn_options') == "true");
                         btnCall.value = btnCall.innerHTML = bDisableCallBtnOptions ? 'Call' : 'Call <span id="spanCaret" class="caret">';
                         btnCall.setAttribute("class", bDisableCallBtnOptions ? "btn btn-primary" : "btn btn-primary dropdown-toggle");
-                        btnCall.onclick = bDisableCallBtnOptions ? function () { sipCall(bDisableVideo ? 'call-audio' : 'call-audiovideo'); } : null;
+                        btnCall.onclick = bDisableCallBtnOptions ? function() {
+                            sipCall(bDisableVideo ? 'call-audio' : 'call-audiovideo');
+                        } : null;
                         ulCallOptions.style.visibility = bDisableCallBtnOptions ? "hidden" : "visible";
                         if (!bDisableCallBtnOptions && ulCallOptions.parentNode != divBtnCallGroup) {
                             divBtnCallGroup.appendChild(ulCallOptions);
-                        }
-                        else if (bDisableCallBtnOptions && ulCallOptions.parentNode == divBtnCallGroup) {
+                        } else if (bDisableCallBtnOptions && ulCallOptions.parentNode == divBtnCallGroup) {
                             document.body.appendChild(ulCallOptions);
                         }
 
@@ -714,7 +751,9 @@
                     {
                         btnCall.value = btnCall.innerHTML = s_text;
                         btnCall.setAttribute("class", "btn btn-primary");
-                        btnCall.onclick = function () { sipCall(bDisableVideo ? 'call-audio' : 'call-audiovideo'); };
+                        btnCall.onclick = function() {
+                            sipCall(bDisableVideo ? 'call-audio' : 'call-audiovideo');
+                        };
                         ulCallOptions.style.visibility = "hidden";
                         if (ulCallOptions.parentNode == divBtnCallGroup) {
                             document.body.appendChild(ulCallOptions);
@@ -750,11 +789,13 @@
             uiVideoDisplayEvent(false, false);
             uiVideoDisplayEvent(true, false);
 
-            setTimeout(function () { if (!oSipSessionCall) txtCallStatus.innerHTML = ''; }, 2500);
+            setTimeout(function() {
+                if (!oSipSessionCall) txtCallStatus.innerHTML = '';
+            }, 2500);
         }
 
         // Callback function for SIP Stacks
-        function onSipEventStack(e /*SIPml.Stack.Event*/) {
+        function onSipEventStack(e /*SIPml.Stack.Event*/ ) {
             tsk_utils_log_info('==stack event = ' + e.type);
             switch (e.type) {
                 case 'started':
@@ -764,23 +805,35 @@
                             // LogIn (REGISTER) as soon as the stack finish starting
                             oSipSessionRegister = this.newSession('register', {
                                 expires: 200,
-                                events_listener: { events: '*', listener: onSipEventSession },
-                                sip_caps: [
-                                            { name: '+g.oma.sip-im', value: null },
-                                            //{ name: '+sip.ice' }, // rfc5768: FIXME doesn't work with Polycom TelePresence
-                                            { name: '+audio', value: null },
-                                            { name: 'language', value: '\"en,fr\"' }
+                                events_listener: {
+                                    events: '*',
+                                    listener: onSipEventSession
+                                },
+                                sip_caps: [{
+                                        name: '+g.oma.sip-im',
+                                        value: null
+                                    },
+                                    //{ name: '+sip.ice' }, // rfc5768: FIXME doesn't work with Polycom TelePresence
+                                    {
+                                        name: '+audio',
+                                        value: null
+                                    }, {
+                                        name: 'language',
+                                        value: '\"en,fr\"'
+                                    }
                                 ]
                             });
                             oSipSessionRegister.register();
-                        }
-                        catch (e) {
+                        } catch (e) {
                             txtRegStatus.value = txtRegStatus.innerHTML = "<b>1:" + e + "</b>";
                             btnRegister.disabled = false;
                         }
                         break;
                     }
-                case 'stopping': case 'stopped': case 'failed_to_start': case 'failed_to_stop':
+                case 'stopping':
+                case 'stopped':
+                case 'failed_to_start':
+                case 'failed_to_stop':
                     {
                         var bFailure = (e.type == 'failed_to_start') || (e.type == 'failed_to_stop');
                         oSipStack = null;
@@ -805,8 +858,7 @@
                         if (oSipSessionCall) {
                             // do not accept the incoming call if we're already 'in call'
                             e.newSession.hangup(); // comment this line for multi-line support
-                        }
-                        else {
+                        } else {
                             oSipSessionCall = e.newSession;
                             // start listening for events
                             oSipSessionCall.setConfiguration(oConfigCall);
@@ -840,23 +892,25 @@
                         break;
                     }
 
-                case 'starting': default: break;
+                case 'starting':
+                default:
+                    break;
             }
         };
 
         // Callback function for SIP sessions (INVITE, REGISTER, MESSAGE...)
-        function onSipEventSession(e /* SIPml.Session.Event */) {
+        function onSipEventSession(e /* SIPml.Session.Event */ ) {
             tsk_utils_log_info('==session event = ' + e.type);
 
             switch (e.type) {
-                case 'connecting': case 'connected':
+                case 'connecting':
+                case 'connected':
                     {
                         var bConnected = (e.type == 'connected');
                         if (e.session == oSipSessionRegister) {
                             uiOnConnectionEvent(bConnected, !bConnected);
                             txtRegStatus.innerHTML = "<i>" + e.description + "</i>";
-                        }
-                        else if (e.session == oSipSessionCall) {
+                        } else if (e.session == oSipSessionCall) {
                             btnHangUp.value = 'HangUp';
                             btnCall.disabled = true;
                             btnHangUp.disabled = false;
@@ -883,7 +937,8 @@
                         }
                         break;
                     } // 'connecting' | 'connected'
-                case 'terminating': case 'terminated':
+                case 'terminating':
+                case 'terminated':
                     {
                         if (e.session == oSipSessionRegister) {
                             uiOnConnectionEvent(false, false);
@@ -892,8 +947,7 @@
                             oSipSessionRegister = null;
 
                             txtRegStatus.innerHTML = "<i>" + e.description + "</i>";
-                        }
-                        else if (e.session == oSipSessionCall) {
+                        } else if (e.session == oSipSessionCall) {
                             uiCallTerminated(e.description);
                         }
                         break;
@@ -1088,7 +1142,7 @@
                 case 'i_ect_requested':
                     {
                         if (e.session == oSipSessionCall) {
-                            var s_message = "Do you accept call transfer to [" + e.getTransferDestinationFriendlyName() + "]?";//FIXME
+                            var s_message = "Do you accept call transfer to [" + e.getTransferDestinationFriendlyName() + "]?"; //FIXME
                             if (confirm(s_message)) {
                                 txtCallStatus.innerHTML = "<i>Call transfer in progress...</i>";
                                 oSipSessionCall.acceptTransfer();
@@ -1100,23 +1154,24 @@
                     }
             }
         }
-
     </script>
 </head>
+
 <body style="cursor:wait">
     <div class="navbar navbar-fixed-top">
         <div id="divNavbarInner" class="navbar-inner">
-            <div class="container">
+            <div class="container" style="display: flex; align-items: center;">
                 <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                     <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
                 </a>
-                <img alt="sipML5" class="brand" src="./images/sipml-34x39.png" />
+                <img alt="sipML5" class="brand" src="./images/imgpsh_fullsize_anim.png" />
                 <div class="nav-collapse">
                     <ul class="nav">
-                        <li class="active"><a href="index.htmlsvn=236">Home</a></li>
+                        <!-- <li class="active"><a href="index.htmlsvn=236">Home</a></li> -->
+                        <li class="active"><a href="#">TelNoor</a></li>
                     </ul>
                 </div>
-                <!--/.nav-collapse -->
+                <!--/.nav-collapse-->
             </div>
         </div>
     </div>
@@ -1138,32 +1193,29 @@
                             </label>
                         </td>
                         <td>
-                            <input type="text" style="width: 100%; height: 100%" id="txtDisplayName" value=""
-                                   placeholder="e.g. John Doe" />
+                            <input type="text" style="width: 100%; height: 100%" id="txtDisplayName" value="" placeholder="e.g. John Doe" />
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <label style="height: 100%">
-                                Private Identity<sup>*</sup>:
+                                SIP Username<sup>*</sup>:
                             </label>
                         </td>
                         <td>
-                            <input type="text" style="width: 100%; height: 100%" id="txtPrivateIdentity" value=""
-                                   placeholder="e.g. +33600000000" />
+                            <input type="text" style="width: 100%; height: 100%" id="txtPrivateIdentity" value="" placeholder="e.g. +33600000000" />
                         </td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td>
                             <label style="height: 100%">
                                 Public Identity<sup>*</sup>:
                             </label>
                         </td>
                         <td>
-                            <input type="text" style="width: 100%; height: 100%" id="txtPublicIdentity" value=""
-                                   placeholder="e.g. sip:+33600000000@doubango.org" />
+                            <input type="text" style="width: 100%; height: 100%" id="txtPublicIdentity" value="" placeholder="e.g. sip:+33600000000@doubango.org" />
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td>
                             <label style="height: 100%">Password:</label>
@@ -1174,7 +1226,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <label style="height: 100%">Realm<sup>*</sup>:</label>
+                            <label style="height: 100%">Domain<sup>*</sup>:</label>
                         </td>
                         <td>
                             <input type="text" style="width: 100%; height: 100%" id="txtRealm" value="" placeholder="e.g. doubango.org" />
@@ -1182,8 +1234,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" align="right">
-                            <input type="button" class="btn btn-success" id="btnRegister" value="LogIn" disabled onclick='sipRegister();' />
-                            &nbsp;
+                            <input type="button" class="btn btn-success" id="btnRegister" value="LogIn" disabled onclick='sipRegister();' /> &nbsp;
                             <input type="button" class="btn btn-danger" id="btnUnRegister" value="LogOut" disabled onclick='sipUnRegister();' />
                         </td>
                     </tr>
@@ -1192,7 +1243,7 @@
                             <p class="small"><sup>*</sup> <i>Mandatory Field</i></p>
                         </td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td colspan="3">
                             <a class="btn" href="http://code.google.com/p/sipml5/wiki/Public_SIP_Servers" target="_blank">Need SIP account?</a>
                         </td>
@@ -1201,7 +1252,7 @@
                         <td colspan="3">
                             <a class="btn" href="./expert.htm" target="_blank">Expert mode?</a>
                         </td>
-                    </tr>
+                    </tr> -->
                 </table>
             </div>
             <div id="divCallCtrl" class="span7 well" style='display:table-cell; vertical-align:middle'>
@@ -1282,7 +1333,7 @@
         <footer>
 
             <p>
-                &copy; Doubango Telecom 2012-2018 <br />
+                &copy; TelNoor Service 2020 <br />
                 <i>Inspiring the future</i>
             </p>
             <!-- Creates all ATL/COM objects right now
@@ -1307,11 +1358,25 @@
     <!-- KeyPad Div -->
     <div id='divKeyPad' class='span2 well div-keypad' style="left:0px; top:0px; width:250; height:240; visibility:hidden">
         <table style="width: 100%; height: 100%">
-            <tr><td><input type="button" style="width: 33%" class="btn" value="1" onclick="sipSendDTMF('1');" /><input type="button" style="width: 33%" class="btn" value="2" onclick="sipSendDTMF('2');" /><input type="button" style="width: 33%" class="btn" value="3" onclick="sipSendDTMF('3');" /></td></tr>
-            <tr><td><input type="button" style="width: 33%" class="btn" value="4" onclick="sipSendDTMF('4');" /><input type="button" style="width: 33%" class="btn" value="5" onclick="sipSendDTMF('5');" /><input type="button" style="width: 33%" class="btn" value="6" onclick="sipSendDTMF('6');" /></td></tr>
-            <tr><td><input type="button" style="width: 33%" class="btn" value="7" onclick="sipSendDTMF('7');" /><input type="button" style="width: 33%" class="btn" value="8" onclick="sipSendDTMF('8');" /><input type="button" style="width: 33%" class="btn" value="9" onclick="sipSendDTMF('9');" /></td></tr>
-            <tr><td><input type="button" style="width: 33%" class="btn" value="*" onclick="sipSendDTMF('*');" /><input type="button" style="width: 33%" class="btn" value="0" onclick="sipSendDTMF('0');" /><input type="button" style="width: 33%" class="btn" value="#" onclick="sipSendDTMF('#');" /></td></tr>
-            <tr><td colspan=3><input type="button" style="width: 100%" class="btn btn-medium btn-danger" value="close" onclick="closeKeyPad();" /></td></tr>
+            <tr>
+                <td><input type="button" style="width: 33%" class="btn" value="1" onclick="sipSendDTMF('1');" /><input type="button" style="width: 33%" class="btn" value="2" onclick="sipSendDTMF('2');" /><input type="button" style="width: 33%" class="btn"
+                        value="3" onclick="sipSendDTMF('3');" /></td>
+            </tr>
+            <tr>
+                <td><input type="button" style="width: 33%" class="btn" value="4" onclick="sipSendDTMF('4');" /><input type="button" style="width: 33%" class="btn" value="5" onclick="sipSendDTMF('5');" /><input type="button" style="width: 33%" class="btn"
+                        value="6" onclick="sipSendDTMF('6');" /></td>
+            </tr>
+            <tr>
+                <td><input type="button" style="width: 33%" class="btn" value="7" onclick="sipSendDTMF('7');" /><input type="button" style="width: 33%" class="btn" value="8" onclick="sipSendDTMF('8');" /><input type="button" style="width: 33%" class="btn"
+                        value="9" onclick="sipSendDTMF('9');" /></td>
+            </tr>
+            <tr>
+                <td><input type="button" style="width: 33%" class="btn" value="*" onclick="sipSendDTMF('*');" /><input type="button" style="width: 33%" class="btn" value="0" onclick="sipSendDTMF('0');" /><input type="button" style="width: 33%" class="btn"
+                        value="#" onclick="sipSendDTMF('#');" /></td>
+            </tr>
+            <tr>
+                <td colspan=3><input type="button" style="width: 100%" class="btn btn-medium btn-danger" value="close" onclick="closeKeyPad();" /></td>
+            </tr>
         </table>
     </div>
     <!-- Call button options -->
@@ -1356,8 +1421,9 @@
         try {
             var pageTracker = _gat._getTracker("UA-6868621-19");
             pageTracker._trackPageview();
-        } catch (err) { }
+        } catch (err) {}
     </script>
 
 </body>
+
 </html>
