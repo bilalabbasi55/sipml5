@@ -1274,19 +1274,25 @@
                                 <!--div class="btn-group">
                                     <input type="button" id="btnBFCP" style="margin: 0; vertical-align:middle; height: 100%;" class="btn btn-primary" value="BFCP" onclick='sipShareScreen();' disabled />
                                 </div-->
-                                <div id="" class="btn-group">
+                                <!-- <div id="" class="btn-group">
                                     <button id="" class="btn btn-primary btn btn-primary dropdown-toggle" data-toggle="dropdown">Call
                                             <span id="spanCaret" class="caret"></span>
-                                    </button>
-                                    <!-- Call button options -->
-                                    <ul id="" class="dropdown-menu">
+                                    </button>-->
+                                <!-- Call button options -->
+                                <!-- <ul id="" class="dropdown-menu">
                                         <li><a href="#" onclick='sipCall("call-audio");'>Audio</a></li>
                                         <li><a href="#" onclick='sipCall("call-audiovideo");'>Video</a></li>
                                         <li id='liScreenShare'><a href="#" onclick='sipShareScreen();'>Screen Share</a></li>
                                         <li class="divider"></li>
                                         <li><a href="#" onclick='uiDisableCallOptions();'><b>Disable these options</b></a></li>
                                     </ul>
-                                </div>&nbsp;&nbsp;
+                                </div>&nbsp;&nbsp; -->
+                                <div class="btn-group">
+                                    <input type="button" onclick='sipCall("call-audio");' id="btnAudioCall" style="margin: 0; vertical-align:middle; height: 100%;" class="btn btn-primary" value="Audio Call" onclick='sipHangUp();' />
+                                </div>
+                                <div class="btn-group">
+                                    <input type="button" onclick='sipCall("call-audiovideo");' id="btnVideoCall" style="margin: 0; vertical-align:middle; height: 100%;" class="btn btn-primary" value="Video Call" onclick='sipHangUp();' />
+                                </div>
                                 <div class="btn-group">
                                     <input type="button" id="btnHangUp" style="margin: 0; vertical-align:middle; height: 100%;" class="btn btn-primary" value="HangUp" onclick='sipHangUp();' />
                                 </div>
